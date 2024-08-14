@@ -1,27 +1,176 @@
-# ChatFrontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.4.
+# Echo Chat System
 
-## Development server
+**Assignment Phase 1 - Software Frameworks**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Overview
 
-## Code scaffolding
+The Echo Chat System is a real-time communication platform built using the MEAN stack (MongoDB, Express, Angular, Node.js), along with Socket.io for real-time communication and Peer.js for video chat capabilities. The system allows users to chat within different groups and channels, with three levels of permissions: Super Admin, Group Admin, and User.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Repository Organization
 
-## Build
+This repository contains the following main components:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **chat-backend**: Contains the Node.js server-side code, including API routes, authentication, and Socket.io setup.
+- **chat-frontend**: Contains the Angular frontend code, including components, services, and routing.
 
-## Running unit tests
+### Branching Strategy
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- **main**: The main branch contains stable, production-ready code.
+- **localdev**: A branch for local development and testing new features before merging into the main branch.
 
-## Running end-to-end tests
+### Update Frequency
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Frequent commits are made to the `localdev` branch during development. Once features are tested and stable, they are merged into `main`.
 
-## Further help
+## Data Structures
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Server-Side (Node.js)
+
+- **User**: Represents a chat user with attributes like `username`, `email`, `id`, `roles`, and `groups`.
+- **Group**: Represents a collection of users with associated channels.
+- **Channel**: Represents a chat room within a group where users can communicate.
+
+### Client-Side (Angular)
+
+- **User Model**: Represents the user entity with attributes like `username`, `email`, `roles`, and `groups`.
+- **Group Model**: Represents the group entity with its associated channels and members.
+- **Channel Model**: Represents the channel entity with a list of messages and participants.
+
+## Angular Architecture
+
+- **Components**: The Angular application is divided into several components, each responsible for a specific part of the UI.
+  - **LoginComponent**: Handles user authentication.
+  - **GroupComponent**: Displays a list of groups the user is a member of.
+  - **ChannelComponent**: Displays channels within a selected group and handles chat interactions.
+  
+- **Services**: Angular services are used to handle data retrieval, user authentication, and communication with the server.
+  - **AuthService**: Manages user authentication and token storage.
+  - **GroupService**: Handles CRUD operations for groups.
+  - **ChannelService**: Manages channels and chat messages.
+  
+- **Models**: Used to define the data structures for users, groups, and channels.
+  - `User`, `Group`, `Channel` models are used to represent data on the client side.
+  
+- **Routes**: The application is organized into routes, allowing users to navigate between different parts of the application.
+  - `/login`: Route for user login.
+  - `/groups`: Route for displaying the user's groups.
+  - `/group/:id/channels`: Route for displaying channels within a specific group.
+
+## Node Server Architecture
+
+- **Modules**: The server is divided into several modules for better organization.
+  - **UserModule**: Handles user registration, login, and authentication.
+  - **GroupModule**: Manages groups, including creation, deletion, and modification.
+  - **ChannelModule**: Handles channels and message broadcasting.
+  
+- **Functions**: Key functions include user authentication, group management, and real-time message broadcasting.
+  - `loginUser()`, `createGroup()`, `sendMessage()`, etc.
+  
+- **Files**:
+  - `server.js`: The entry point for the Node.js server.
+  - `routes.js`: Defines API routes for handling client requests.
+  - `auth.js`: Middleware for handling authentication and authorization.
+
+- **Global Variables**:
+  - `io`: The Socket.io instance used for real-time communication.
+  - `users`, `groups`, `channels`: Arrays or collections storing user, group, and channel data.
+
+## API Routes
+
+- **/api/login** - POST: Authenticates a user.
+- **/api/groups** - GET: Retrieves groups the authenticated user belongs to.
+- **/api/groups** - POST: Creates a new group (Group Admin only).
+- **/api/groups/:id/channels** - GET: Retrieves channels within a group.
+- **/api/groups/:groupId/channels/:channelId/messages** - GET: Retrieves messages from a channel.
+- **/api/groups/:groupId/channels/:channelId/messages** - POST: Sends a message to a channel.
+
+## Client-Server Interaction
+
+### Login Process
+1. The user enters their username and password.
+2. The Angular app sends a POST request to `/api/login` with the user's credentials.
+3. The server verifies the credentials and returns a token.
+4. The token is stored in the client's local storage and used for subsequent authenticated requests.
+
+### Group and Channel Interaction
+1. After login, the user is presented with a list of groups.
+2. When a group is selected, a GET request is sent to `/api/groups/:id/channels` to retrieve available channels.
+3. When a channel is selected, a GET request is sent to `/api/groups/:groupId/channels/:channelId/messages` to load the chat history.
+4. The user can send a message, which triggers a POST request to the same endpoint, and the message is broadcasted to other users in real-time.
+
+## Running the Application
+
+### Prerequisites
+
+Before running the application, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v14.x or later)
+- [Angular CLI](https://angular.io/cli)
+- [Git](https://git-scm.com/)
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/YourUsername/Echo-Software-Frameworks-Assignment-.git
+cd Echo-Software-Frameworks-Assignment-
+```
+
+### Running the Backend (Node.js Server)
+
+1. Navigate to the `chat-backend` directory:
+
+    ```bash
+    cd chat-backend
+    ```
+
+2. Install the required dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Start the Node.js server:
+
+    ```bash
+    npm start
+    ```
+
+    The server should now be running on `http://localhost:3000`.
+
+### Running the Frontend (Angular App)
+
+1. Open a new terminal window and navigate to the `chat-frontend` directory:
+
+    ```bash
+    cd ../chat-frontend
+    ```
+
+2. Install the required dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Start the Angular development server:
+
+    ```bash
+    ng serve
+    ```
+
+    The frontend should now be accessible at `http://localhost:4200`.
+
+### Accessing the Application
+
+- Open your browser and go to `http://localhost:4200`.
+- You will be prompted to log in. Use the credentials:
+  - **Username**: `super`
+  - **Password**: `123`
+- After logging in, you will be able to create groups, channels, and start chatting.
+
+## Future Enhancements (Phase 2)
+
+- **MongoDB Integration**: Replace local storage with MongoDB for persistent data storage.
+- **Socket.io**: Implement real-time message broadcasting using Socket.io.
+- **Image and Video Support**: Allow users to send images and video messages.
+- **PeerJS Integration**: Add video chat functionality using PeerJS.
