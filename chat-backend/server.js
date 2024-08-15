@@ -6,17 +6,33 @@ const socketIo = require('socket.io');
 
 const app = express();
 
-app.use(cors());                            //Middleware Setup
+// Middleware Setup
+app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {               // Define a simple route
+// Define a simple route
+app.get('/', (req, res) => {
   res.send('Chat App Backend');
 });
 
-const server = http.createServer(app);     // Create an HTTP server and integrate Socket.IO
+// Import routes
+const authRoutes = require('./routes/auth');
+const channelRoutes = require('./routes/channel');
+const groupRoutes = require('./routes/group');
+const userRoutes = require('./routes/user');  // Import user routes
+
+// Use routes
+app.use('/api/auth', authRoutes);
+app.use('/api/channels', channelRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/users', userRoutes);  // Use user routes
+
+// Create an HTTP server and integrate Socket.IO
+const server = http.createServer(app);
 const io = socketIo(server);
 
-io.on('connection', (socket) => {          // Socket.IO connection handler
+// Socket.IO connection handler
+io.on('connection', (socket) => {
   console.log('New client connected');
 
   socket.on('disconnect', () => {
@@ -24,5 +40,6 @@ io.on('connection', (socket) => {          // Socket.IO connection handler
   });
 });
 
-const PORT = process.env.PORT || 5000;     // Define the port
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));   // Start the server
+// Define the port
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
