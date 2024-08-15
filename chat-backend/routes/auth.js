@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 
 // Route for logging in
-router.post('/login', authController.login);
+router.post('/auth/login', authController.login);
 
 // Route to initialize Super Admin (for testing purpose)
 router.post('/initialize-superadmin', userController.initializeSuperAdmin);

@@ -5,6 +5,7 @@ exports.initializeSuperAdmin = () => {
     const superAdmin = {
         id: '1',
         username: 'super',
+        email: 'super@email.com',
         password: '123',  // This should be hashed in a real application
         roles: ['Super Admin'],
         groups: []
@@ -28,7 +29,14 @@ exports.createUser = (req, res) => {
         return res.status(400).json({ message: 'Username already exists' });
     }
 
-    const newUser = { id: Date.now().toString(), username, email, roles, password, groups: [] };
+    const newUser = { 
+        id: (users.length + 1).toString(), 
+        username, 
+        email, 
+        password, 
+        roles: ['User'], 
+        groups: [] 
+    };
     users.push(newUser);
     
     res.status(201).json(newUser);
