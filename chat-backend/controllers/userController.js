@@ -6,7 +6,7 @@ exports.initializeSuperAdmin = () => {
         id: '1',
         username: 'super',
         email: 'super@email.com',
-        password: '123',  // This should be hashed in a real application
+        password: '123',
         roles: ['Super Admin'],
         groups: []
     };
