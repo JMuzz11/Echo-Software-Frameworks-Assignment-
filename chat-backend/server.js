@@ -5,7 +5,7 @@ const port = 3000;
 // Import routes
 const { router: authRoutes } = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const groupRoutes = require('./routes/group');
+const { router: groupRoutes } = require('./routes/group');
 const channelRoutes = require('./routes/channel');
 
 app.use(express.json());
