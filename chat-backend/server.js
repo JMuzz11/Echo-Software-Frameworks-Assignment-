@@ -2,15 +2,25 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON requests
+// Import routes
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+const groupRoutes = require('./routes/group');
+const channelRoutes = require('./routes/channel');
+
 app.use(express.json());
 
-// Basic route for testing
+// Use routes
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use('/group', groupRoutes);
+app.use('/channel', channelRoutes);
+
+// Basic route to ensure server is running
 app.get('/', (req, res) => {
-  res.send('Hello, this is the Echo back-end server!');
+  res.send('Echo backend server is running!');
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
