@@ -1,11 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const { users } = require('./auth'); // Import the users array from auth.js
 
-// Example: Get user details
+// Get user details by ID
 router.get('/:id', (req, res) => {
-    const userId = req.params.id;
-    // Logic to get user details by id
-    res.send(`User details for user ID: ${userId}`);
+    const userId = parseInt(req.params.id);
+
+    // Find the user by ID
+    const user = users.find(u => u.id === userId);
+
+    if (user) {
+        // Exclude password from the response
+        const { password, ...userWithoutPassword } = user;
+        res.json(userWithoutPassword);
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
 });
 
 module.exports = router;
