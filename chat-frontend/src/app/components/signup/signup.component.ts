@@ -28,31 +28,20 @@ export class SignupComponent {
     });
   }
 
-  onSubmit() {
+  onSignup() {
     if (this.signupForm.invalid) {
       return;
     }
-
+  
     const { username, email, password } = this.signupForm.value;
-
-    // First, register the user
+  
+    // Register the user
     this.authService.register(username, email, password).subscribe({
       next: response => {
         console.log('Signup successful', response);
-        
-        // If signup is successful, log the user in
-        this.authService.login(username, password).subscribe({
-          next: loginResponse => {
-            console.log('Login successful', loginResponse);
-            
-            // Navigate to the dashboard after successful login
-            this.router.navigate(['/dashboard']);
-          },
-          error: loginError => {
-            console.error('Login failed', loginError);
-            this.signupError = 'Login failed after successful signup. Please try again.';
-          }
-        });
+  
+        // Redirect to login after successful signup
+        this.router.navigate(['']);
       },
       error: signupError => {
         console.error('Signup failed', signupError);

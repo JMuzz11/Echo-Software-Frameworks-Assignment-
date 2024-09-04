@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   // Registration method to create a new user
-  register(username: string, password: string, email: string): Observable<any> {
+  register(username: string,email: string,  password: string ): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/register`, { username, password, email }).pipe(
       map(response => {
         return response;
