@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-channel',
-  templateUrl: './channel.component.html',
-  styleUrls: ['./channel.component.css']
+  standalone: true, // Indicating that this is a standalone component
+  imports: [CommonModule, ReactiveFormsModule], // Import CommonModule and ReactiveFormsModule
+  templateUrl: './channel-management.component.html',
+  styleUrls: ['./channel-management.component.css']
 })
 export class ChannelComponent implements OnInit {
   groupId!: number;
