@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GroupService } from '../../services/group.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';  // Import CommonModule
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,  // Marking as a standalone component
+  imports: [CommonModule],  // Import CommonModule for directives like ngIf, ngFor
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -15,17 +18,13 @@ export class DashboardComponent implements OnInit {
   constructor(
     private groupService: GroupService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.currentUser = this.authService.getUserFromSession();
     this.loadGroups();
-  }
-  
-   // Method to load user data from session or service
-   loadUserData() {
-    this.user = this.authService.getUserFromSession(); // Fetch the user data from session
   }
 
   loadGroups() {
@@ -39,7 +38,6 @@ export class DashboardComponent implements OnInit {
   }
 
   selectChannel(group: any, channel: any): void {
-    // Logic to select a channel and navigate to the chat component
     this.router.navigate(['/chat'], { queryParams: { groupId: group.id, channelId: channel.id } });
   }
 

@@ -1,90 +1,135 @@
+/* General container styling */
 .dashboard-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Heading styling */
+.dashboard-container h1 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* User info section */
+.user-info {
+  margin-bottom: 30px;
+}
+
+.user-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.user-info p {
+  font-size: 1rem;
+  margin: 5px 0;
+  color: #444;
+}
+
+/* Groups section */
+.groups-section {
+  margin-bottom: 40px;
+}
+
+.groups-section h2 {
+  font-size: 1.5rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.group-card {
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.group-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.group-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.group-card ul li {
+  margin: 5px 0;
+}
+
+.group-card ul li a {
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.group-card ul li a:hover {
+  text-decoration: underline;
+}
+
+/* No groups message */
+.ng-template p {
+  color: #999;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+/* Admin panel */
+.admin-section {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.admin-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Admin buttons */
+.admin-section button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-section button:hover {
+  background-color: #0056b3;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
   }
-  
-  h1 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .user-info {
-    margin-bottom: 20px;
-  }
-  
-  .user-info h2 {
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
-  .user-info p {
-    margin: 5px 0;
-  }
-  
-  .groups-section {
-    margin-bottom: 20px;
-  }
-  
-  .groups-section h2 {
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
-  .group-card {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fff;
-  }
-  
+
   .group-card h3 {
-    margin-top: 0;
+    font-size: 1rem;
   }
-  
-  .group-card ul {
-    padding-left: 20px;
-  }
-  
-  .group-card li {
-    margin-bottom: 5px;
-  }
-  
-  .group-card a {
-    color: #007bff;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  
-  .group-card a:hover {
-    text-decoration: underline;
-  }
-  
-  .admin-section {
-    text-align: center;
-    margin-top: 30px;
-  }
-  
-  .admin-section h2 {
-    margin-bottom: 15px;
-    color: #555;
-  }
-  
+
   .admin-section button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
-  
-  .admin-section button:hover {
-    background-color: #0056b3;
-  }
-  
+}
