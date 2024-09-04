@@ -58,5 +58,9 @@ export class DashboardComponent implements OnInit {
     sessionStorage.clear();
     this.router.navigate(['']);
   }
+
+  switchToGroups(): void {
+    this.router.navigate(['/groups'])
+  }
 }
 

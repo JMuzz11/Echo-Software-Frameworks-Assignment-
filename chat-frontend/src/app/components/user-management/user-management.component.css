@@ -5,11 +5,14 @@
   background-color: #f5f5f5;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
 
 h1 {
   text-align: center;
   color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
 .user-list {
@@ -19,6 +22,7 @@ h1 {
 .user-list h2 {
   margin-bottom: 10px;
   color: #555;
+  font-size: 1.5rem;
 }
 
 .user-list ul {
@@ -27,29 +31,35 @@ h1 {
 }
 
 .user-list li {
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.user-list li:hover {
+  background-color: #f1f1f1;
 }
 
 .user-actions {
   display: flex;
-  gap: 10px; /* Add some space between buttons */
+  gap: 10px;
 }
 
 .user-list button {
-  margin-left: 10px;
-  padding: 5px 10px;
+  padding: 8px 15px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .user-list button:hover {
@@ -58,7 +68,7 @@ h1 {
 
 .user-form {
   background-color: #fff;
-  padding: 20px;
+  padding: 25px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
@@ -66,23 +76,25 @@ h1 {
 .user-form h2 {
   margin-bottom: 20px;
   color: #555;
+  font-size: 1.5rem;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: bold;
   color: #555;
+  font-size: 1rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 12px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -98,29 +110,65 @@ h1 {
 
 .error {
   color: red;
-  font-size: 0.9em;
+  font-size: 0.9rem;
   margin-top: 5px;
 }
 
-button[type="submit"] {
-  padding: 10px 20px;
+button[type="submit"], button[type="button"] {
+  padding: 12px 25px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin-right: 10px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:disabled {
   background-color: #aaa;
+  cursor: not-allowed;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
 }
 
 button[type="button"] {
-  padding: 10px 20px;
   background-color: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+}
+
+button[type="button"]:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .user-management-container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .user-form, .user-list li {
+    padding: 15px;
+  }
+
+  button[type="submit"], button[type="button"] {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .user-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-actions {
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }

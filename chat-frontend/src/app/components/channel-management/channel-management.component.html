@@ -1,20 +1,36 @@
 <div class="channel-management-container">
-    <h2>Channels</h2>
+  <h1>Channel Management</h1>
+
+  <!-- Channel List -->
+  <div class="channel-list">
+    <h2>Channels for Group {{ groupId }}</h2>
     <ul>
       <li *ngFor="let channel of channels">
         <span>{{ channel.name }}</span>
-        <button (click)="selectChannel(channel)">Edit</button>
-        <button (click)="deleteChannel(channel)">Delete</button>
+        <div class="channel-actions">
+          <button (click)="selectChannel(channel)">Edit</button>
+          <button (click)="deleteChannel(channel)">Delete</button>
+        </div>
       </li>
     </ul>
-    
-    <div class="channel-form">
-      <h3>{{ isEditing ? 'Edit' : 'Add' }} Channel</h3>
-      <form [formGroup]="channelForm" (ngSubmit)="saveChannel()">
-        <label for="channelName">Channel Name</label>
-        <input id="channelName" type="text" formControlName="name" required />
-        <button type="submit">{{ isEditing ? 'Update' : 'Add' }} Channel</button>
-      </form>
-    </div>
+    <button (click)="resetForm()">Add New Channel</button>
   </div>
-  
+
+  <!-- Channel Form -->
+  <div class="channel-form" *ngIf="channelForm">
+    <h2>{{ isEditing ? 'Edit' : 'Add' }} Channel</h2>
+    <form [formGroup]="channelForm" (ngSubmit)="saveChannel()">
+      <div class="form-group">
+        <label for="channelName">Channel Name</label>
+        <input id="channelName" type="text" formControlName="channelName" required />
+        <div *ngIf="channelForm.get('channelName')?.invalid && channelForm.get('channelName')?.touched" class="error">
+          Channel name is required and must be at least 3 characters long.
+        </div>
+      </div>
+      <button type="submit" [disabled]="channelForm.invalid">{{ isEditing ? 'Update' : 'Add' }} Channel</button>
+      <button type="button" (click)="resetForm()">Cancel</button>
+    </form>
+  </div>
+
+  <button (click)="returnToGroup()">Back to Group</button>
+</div>

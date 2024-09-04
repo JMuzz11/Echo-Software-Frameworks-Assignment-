@@ -1,78 +1,88 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChannelService } from '../../services/channel.service';
-import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-channel-management',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './channel-management.component.html',
-  styleUrls: ['./channel-management.component.css']
+  selector: 'app-channel',
+  templateUrl: './channel.component.html',
+  styleUrls: ['./channel.component.css']
 })
-export class ChannelManagementComponent implements OnInit {
+export class ChannelComponent implements OnInit {
+  groupId!: number;
   channels: any[] = [];
+  selectedChannel: any = null;
   channelForm: FormGroup;
   isEditing = false;
-  selectedGroupId = 1; // Example group ID, update this dynamically if needed
 
   constructor(
-    private fb: FormBuilder,
+    private route: ActivatedRoute,
     private channelService: ChannelService,
-    private authService: AuthService
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.channelForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required]]
+      channelName: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Get the groupId from the route parameters
+    this.groupId = parseInt(this.route.snapshot.paramMap.get('groupId') || '', 10);
     this.loadChannels();
   }
 
-  loadChannels() {
-    this.channelService.getChannels(this.selectedGroupId).subscribe(channels => {
-      this.channels = channels;
+  // Load the channels for the current group
+  loadChannels(): void {
+    this.channelService.getChannels(this.groupId).subscribe((data: any[]) => {
+      this.channels = data;
     });
   }
 
-  selectChannel(channel: any) {
+  // Select a channel for editing
+  selectChannel(channel: any): void {
+    this.selectedChannel = channel;
     this.isEditing = true;
-    this.channelForm.patchValue(channel);
+    this.channelForm.patchValue({
+      channelName: channel.name,
+    });
   }
 
-  saveChannel() {
-    if (this.channelForm.invalid) {
-      return;
-    }
+  // Save the channel (either add a new one or update an existing one)
+  saveChannel(): void {
+    if (this.channelForm.valid) {
+      const channelData = this.channelForm.value;
 
-    const channelData = this.channelForm.value;
-    const channelName = channelData.name;
-
-    if (this.isEditing) {
-      this.channelService.updateChannel(this.selectedGroupId, channelData.id, channelName).subscribe(() => {
-        this.loadChannels();
-        this.resetForm();
-      });
-    } else {
-      this.channelService.createChannel(this.selectedGroupId, channelName).subscribe(() => {
-        this.loadChannels();
-        this.resetForm();
-      });
+      if (this.isEditing) {
+        this.channelService.updateChannel(this.groupId, this.selectedChannel.id, channelData.channelName).subscribe(() => {
+          this.loadChannels();
+          this.resetForm();
+        });
+      } else {
+        this.channelService.createChannel(this.groupId, channelData.channelName).subscribe(() => {
+          this.loadChannels();
+          this.resetForm();
+        });
+      }
     }
   }
 
-  deleteChannel(channel: any) {
-    this.channelService.deleteChannel(this.selectedGroupId, channel.id).subscribe(() => {
+  // Delete a channel
+  deleteChannel(channel: any): void {
+    this.channelService.deleteChannel(this.groupId, channel.id).subscribe(() => {
       this.loadChannels();
     });
   }
 
-  resetForm() {
-    this.isEditing = false;
+  // Reset the form
+  resetForm(): void {
     this.channelForm.reset();
+    this.selectedChannel = null;
+    this.isEditing = false;
+  }
+
+  // Navigate back to the group page
+  returnToGroup(): void {
+    this.router.navigate([`/group/${this.groupId}`]);
   }
 }

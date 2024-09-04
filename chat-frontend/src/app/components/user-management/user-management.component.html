@@ -9,10 +9,14 @@
         <div class="user-actions">
           <button (click)="selectUser(user)">Edit</button>
           <button (click)="deleteUser(user)">Delete User</button>
-          <button *ngIf="!isSuperAdmin(user)" (click)="makeSuperAdmin(user)">Make SUPER ADMIN</button>
+          <!-- Add 'Make Group Admin' button -->
+          <button *ngIf="!isGroupAdmin(user)" (click)="makeGroupAdmin(user)">Make Group Admin</button>
+          <!-- Add 'Make Super Admin' button only if the user is a Group Admin and not already a Super Admin -->
+          <button *ngIf="isGroupAdmin(user) && !isSuperAdmin(user)" (click)="makeSuperAdmin(user)">Make Super Admin</button>
         </div>
       </li>
     </ul>
   </div>
 </div>
+
 <button (click)="returnToDashboard()">Back to Dashboard</button>

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
@@ -33,15 +33,12 @@ export class UserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Load users from the service
   loadUsers(): void {
     this.userService.getUsers().subscribe((data: any[]) => {
-      console.log('users loaded', data)
       this.users = data;
     });
   }
 
-  // Select a user for editing
   selectUser(user: any): void {
     this.selectedUser = user;
     this.isEditing = true;
@@ -52,7 +49,6 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  // Save user after editing or adding
   saveUser(): void {
     if (this.userForm.valid) {
       const updatedUser = {
@@ -62,9 +58,8 @@ export class UserManagementComponent implements OnInit {
       };
   
       if (this.isEditing) {
-        // Now pass both the user ID and the updated user object to updateUser
         this.userService.updateUser(updatedUser.id, updatedUser).subscribe(() => {
-          this.loadUsers(); // Refresh the users list after updating
+          this.loadUsers();
           this.resetForm();
         });
       } else {
@@ -75,9 +70,7 @@ export class UserManagementComponent implements OnInit {
       }
     }
   }
-  
 
-  // Delete a user
   deleteUser(user: any): void {
     this.userService.deleteUser(user.id).subscribe(() => {
       this.loadUsers();
@@ -87,35 +80,42 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  // Promote a user to SUPER ADMIN
+  makeGroupAdmin(user: any): void {
+    user.roles.pop();
+    user.roles.push('Group Admin');
+    this.userService.updateUser(user.id, user).subscribe(() => {
+      this.loadUsers(); // Refresh the users list after updating
+    });
+  }
+
   makeSuperAdmin(user: any): void {
-    user.roles.pop()
+    user.roles.pop();
     user.roles.push('Super Admin');
     this.userService.updateUser(user.id, user).subscribe(() => {
       this.loadUsers(); // Refresh the users list after updating
     });
   }
 
-  // Check if the user is already a SUPER ADMIN
+  isGroupAdmin(user: any): boolean {
+    return user.roles.includes('Group Admin');
+  }
+
   isSuperAdmin(user: any): boolean {
     return user.roles.includes('Super Admin');
   }
 
-  // Reset the form
   resetForm(): void {
     this.userForm.reset();
     this.selectedUser = null;
     this.isEditing = false;
   }
 
-  // Add a new user
   addUser(): void {
     this.resetForm();
     this.isEditing = false;
   }
 
-  // Navigate back to the dashboard
-  returnToDashboard() {
+  returnToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
 }
