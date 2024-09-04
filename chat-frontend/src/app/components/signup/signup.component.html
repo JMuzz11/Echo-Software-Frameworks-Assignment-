@@ -1,0 +1,56 @@
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter your username"
+          required
+        />
+        <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" class="error">
+          Username is required and must be at least 3 characters long.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          required
+        />
+        <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="error">
+          Please enter a valid email.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          required
+        />
+        <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" class="error">
+          Password must be at least 6 characters long.
+        </div>
+      </div>
+  
+      <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+    </form>
+  
+    <!-- Button to switch to login -->
+    <button type="button" (click)="switchToLogin()">Switch To Login</button>
+  
+    <div *ngIf="signupError" class="error">
+      {{ signupError }}
+    </div>
+  </div>
+  

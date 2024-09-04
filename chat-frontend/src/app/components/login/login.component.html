@@ -31,6 +31,8 @@
   
       <button type="submit" [disabled]="loginForm.invalid">Login</button>
     </form>
+
+    <button type="button" (click)="switchToSignup()">Switch To Signup</button>
   
     <div *ngIf="loginError" class="error">
       {{ loginError }}
