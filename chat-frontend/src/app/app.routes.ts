@@ -6,6 +6,7 @@ import { UserManagementComponent } from './components/user-management/user-manag
 import { GroupManagementComponent } from './components/group-management/group-management.component';
 import { ChannelManagementComponent } from './components/channel-management/channel-management.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { GroupComponent } from './components/group/group.component';
 
 import { authGuard } from './auth.guard';
 
@@ -17,5 +18,7 @@ export const routes: Routes = [
   { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
   { path: 'users', component: UserManagementComponent, canActivate: [authGuard] },
   { path: 'groups', component: GroupManagementComponent, canActivate: [authGuard] },
-  { path: 'channels', component: ChannelManagementComponent, canActivate: [authGuard] }
+  { path: 'channels', component: ChannelManagementComponent, canActivate: [authGuard] },
+  { path: 'group', component: GroupComponent, canActivate: [authGuard] }
+
 ];

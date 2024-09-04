@@ -51,6 +51,13 @@ deleteGroup(id: number): Observable<any> {
   );
 }
 
+getGroupsForUser(userId: number): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
+    map(response => response),
+    catchError(this.handleError)
+  );
+}
+
 
   // Error handling method
   private handleError(error: HttpErrorResponse) {

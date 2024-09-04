@@ -1,39 +1,42 @@
 <div class="dashboard-container">
-    <h1>Welcome, {{ user.username }}</h1>
-    <div class="user-info">
-      <h2>Your Information</h2>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Role:</strong> {{ user.roles.join(', ') }}</p>
-    </div>
-  
-    <div class="groups-section">
-      <h2>Your Groups</h2>
-      <div *ngIf="user.groups.length > 0; else noGroups">
-        <div *ngFor="let group of user.groups" class="group-card">
-          <h3>{{ group.name }}</h3>
-          <div *ngIf="group.channels.length > 0">
-            <p>Select a channel to start chatting:</p>
-            <ul>
-              <li *ngFor="let channel of group.channels">
-                <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
-              </li>
-            </ul>
-          </div>
-          <div *ngIf="group.channels.length === 0">
-            <p>No channels available in this group.</p>
-          </div>
+  <h1>Welcome, {{ user.username }}</h1>
+
+  <!-- User Information Section -->
+  <div class="user-info">
+    <h2>Your Information</h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Role:</strong> {{ user.roles.join(', ') }}</p>
+  </div>
+
+  <!-- Groups Section -->
+  <div class="groups-section">
+    <h2>Your Groups</h2>
+    <div *ngIf="user.groups.length > 0; else noGroups">
+      <div *ngFor="let group of user.groups" class="group-card">
+        <h3>{{ group.name }}</h3>
+        <div *ngIf="group.channels.length > 0">
+          <p>Select a channel to start chatting:</p>
+          <ul>
+            <li *ngFor="let channel of group.channels">
+              <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="group.channels.length === 0">
+          <p>No channels available in this group.</p>
         </div>
       </div>
-      <ng-template #noGroups>
-        <p>You are not part of any groups.</p>
-      </ng-template>
     </div>
-  
-    <div *ngIf="user.roles.includes('Super Admin') || user.roles.includes('Group Admin')" class="admin-section">
-      <h2>Admin Panel</h2>
-      <button (click)="manageUsers()">Manage Users</button>
-      <button (click)="manageGroups()">Manage Groups</button>
-      <button (click)="manageChannels()">Manage Channels</button>
-    </div>
+    <ng-template #noGroups>
+      <p>You are not part of any groups.</p>
+    </ng-template>
   </div>
-  
+
+  <!-- Admin Panel Section (Visible for Super Admins and Group Admins) -->
+  <div *ngIf="user.roles.includes('Super Admin') || user.roles.includes('Group Admin')" class="admin-section">
+    <h2>Admin Panel</h2>
+    <button (click)="manageUsers()">Manage Users</button>
+    <button (click)="manageGroups()">Manage Groups</button>
+    <button (click)="manageChannels()">Manage Channels</button>
+  </div>
+</div>

@@ -1,22 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { GroupService } from '../../services/group.service';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  user: any;
+  groups: any[] = [];
+  currentUser: any;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private groupService: GroupService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {
-    this.user = this.authService.getCurrentUser(); // Assuming getCurrentUser() returns user data
+  ngOnInit() {
+    this.currentUser = this.authService.getUserFromSession();
+    this.loadGroups();
+  }
+  
+   // Method to load user data from session or service
+   loadUserData() {
+    this.user = this.authService.getUserFromSession(); // Fetch the user data from session
+  }
+
+  loadGroups() {
+    this.groupService.getGroupsForUser(this.currentUser.id).subscribe(groups => {
+      this.groups = groups;
+    });
+  }
+
+  goToGroup(groupId: number) {
+    this.router.navigate([`/group/${groupId}`]);
   }
 
   selectChannel(group: any, channel: any): void {
