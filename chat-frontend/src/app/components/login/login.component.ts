@@ -44,4 +44,5 @@ export class LoginComponent {
   switchToSignup(): void {
     this.router.navigate(['/signup']);
   }
+
 }

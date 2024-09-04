@@ -53,4 +53,10 @@ export class DashboardComponent implements OnInit {
   manageChannels(): void {
     this.router.navigate(['/channels']);
   }
+
+  logout(): void {
+    sessionStorage.clear();
+    this.router.navigate(['']);
+  }
 }
+

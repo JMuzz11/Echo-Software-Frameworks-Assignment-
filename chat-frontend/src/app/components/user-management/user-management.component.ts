@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-management',
@@ -16,7 +18,12 @@ export class UserManagementComponent implements OnInit {
   userForm: FormGroup;
   isEditing = false;
 
-  constructor(private authService: AuthService, private fb: FormBuilder) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -28,12 +35,15 @@ export class UserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
+  // Load users from the service
   loadUsers(): void {
-    this.authService.getUsers().subscribe((data: any[]) => {
+    this.userService.getUsers().subscribe((data: any[]) => {
+      console.log('users loaded', data)
       this.users = data;
     });
   }
 
+  // Select a user for editing
   selectUser(user: any): void {
     this.selectedUser = user;
     this.isEditing = true;
@@ -44,6 +54,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  // Save user after editing or adding
   saveUser(): void {
     if (this.userForm.valid) {
       const updatedUser = {
@@ -53,12 +64,12 @@ export class UserManagementComponent implements OnInit {
       };
       
       if (this.isEditing) {
-        this.authService.updateUser(updatedUser).subscribe(() => {
+        this.userService.updateUser(updatedUser).subscribe(() => {
           this.loadUsers();
           this.resetForm();
         });
       } else {
-        this.authService.addUser(updatedUser).subscribe(() => {
+        this.userService.addUser(updatedUser).subscribe(() => {
           this.loadUsers();
           this.resetForm();
         });
@@ -66,8 +77,9 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
+  // Delete a user
   deleteUser(user: any): void {
-    this.authService.deleteUser(user.id).subscribe(() => {
+    this.userService.deleteUser(user.id).subscribe(() => {
       this.loadUsers();
       if (this.selectedUser?.id === user.id) {
         this.resetForm();
@@ -75,14 +87,34 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  // Promote a user to SUPER ADMIN
+  makeSuperAdmin(user: any): void {
+    user.roles.push('Super Admin');
+    this.userService.updateUser(user).subscribe(() => {
+      this.loadUsers(); // Refresh the users list after updating
+    });
+  }
+
+  // Check if the user is already a SUPER ADMIN
+  isSuperAdmin(user: any): boolean {
+    return user.roles.includes('Super Admin');
+  }
+
+  // Reset the form
   resetForm(): void {
     this.userForm.reset();
     this.selectedUser = null;
     this.isEditing = false;
   }
 
+  // Add a new user
   addUser(): void {
     this.resetForm();
     this.isEditing = false;
+  }
+
+  // Navigate back to the dashboard
+  returnToDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 }

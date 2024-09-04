@@ -1,3 +1,7 @@
+<div class="logout-button-container">
+  <button (click)="logout()">Logout</button>
+</div>
+
 <div class="dashboard-container">
   <h1>Welcome, {{ currentUser.username }}</h1>
 
@@ -13,7 +17,7 @@
     <div *ngIf="groups.length > 0; else noGroups">
       <div *ngFor="let group of groups" class="group-card">
         <h3>
-          <a (click)="goToGroup(group.id)">{{ group.name }}</a> <!-- Clicking on this will navigate to the group page -->
+          <a (click)="goToGroup(group.id)">{{ group.name }}</a>
         </h3>
         <div *ngIf="group.channels.length > 0">
           <p>Select a channel to start chatting:</p>
@@ -32,7 +36,6 @@
       <p>You are not part of any groups.</p>
     </ng-template>
   </div>
-  
 
   <!-- Admin Panel Section (Visible for Super Admins and Group Admins) -->
   <div *ngIf="currentUser.roles.includes('Super Admin') || currentUser.roles.includes('Group Admin')" class="admin-section">

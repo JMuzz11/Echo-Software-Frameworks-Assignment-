@@ -1,48 +1,18 @@
 <div class="user-management-container">
-    <h1>User Management</h1>
-  
-    <div class="user-list">
-      <h2>Users</h2>
-      <ul>
-        <li *ngFor="let user of users">
-          <span>{{ user.username }}</span>
+  <h1>User Management</h1>
+
+  <div class="user-list">
+    <h2>Users</h2>
+    <ul>
+      <li *ngFor="let user of users">
+        <span>{{ user.username }} ({{ user.roles.join(', ') }})</span>
+        <div class="user-actions">
           <button (click)="selectUser(user)">Edit</button>
-          <button (click)="deleteUser(user)">Delete</button>
-        </li>
-      </ul>
-      <button (click)="addUser()">Add New User</button>
-    </div>
-  
-    <div class="user-form" *ngIf="userForm">
-      <h2>{{ isEditing ? 'Edit' : 'Add' }} User</h2>
-      <form [formGroup]="userForm" (ngSubmit)="saveUser()">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input id="username" type="text" formControlName="username" required />
-          <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="error">
-            Username is required and must be at least 3 characters long.
-          </div>
+          <button (click)="deleteUser(user)">Delete User</button>
+          <button *ngIf="!isSuperAdmin(user)" (click)="makeSuperAdmin(user)">Make SUPER ADMIN</button>
         </div>
-  
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input id="email" type="email" formControlName="email" required />
-          <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="error">
-            Please enter a valid email.
-          </div>
-        </div>
-  
-        <div class="form-group">
-          <label for="roles">Roles (comma-separated)</label>
-          <input id="roles" type="text" formControlName="roles" required />
-          <div *ngIf="userForm.get('roles')?.invalid && userForm.get('roles')?.touched" class="error">
-            Roles are required.
-          </div>
-        </div>
-  
-        <button type="submit" [disabled]="userForm.invalid">{{ isEditing ? 'Update' : 'Add' }} User</button>
-        <button type="button" (click)="resetForm()">Cancel</button>
-      </form>
-    </div>
+      </li>
+    </ul>
   </div>
-  
+</div>
+<button (click)="returnToDashboard()">Back to Dashboard</button>
