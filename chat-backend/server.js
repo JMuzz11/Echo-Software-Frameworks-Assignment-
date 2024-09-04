@@ -5,7 +5,7 @@ const port = 3000;
 
 // Import routes
 const { router: authRoutes } = require('./routes/auth');
-const { router: userRoutes } = require('./routes/user');
+const userRoutes  = require('./routes/user');
 const { router: groupRoutes } = require('./routes/group');
 const { router: channelRoutes } = require('./routes/channel');
 

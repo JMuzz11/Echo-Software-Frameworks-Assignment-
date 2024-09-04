@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 
@@ -19,7 +18,6 @@ export class UserManagementComponent implements OnInit {
   isEditing = false;
 
   constructor(
-    private authService: AuthService,
     private userService: UserService,
     private fb: FormBuilder,
     private router: Router
@@ -62,10 +60,11 @@ export class UserManagementComponent implements OnInit {
         ...this.userForm.value,
         roles: this.userForm.value.roles.split(',').map((role: string) => role.trim())
       };
-      
+  
       if (this.isEditing) {
-        this.userService.updateUser(updatedUser).subscribe(() => {
-          this.loadUsers();
+        // Now pass both the user ID and the updated user object to updateUser
+        this.userService.updateUser(updatedUser.id, updatedUser).subscribe(() => {
+          this.loadUsers(); // Refresh the users list after updating
           this.resetForm();
         });
       } else {
@@ -76,6 +75,7 @@ export class UserManagementComponent implements OnInit {
       }
     }
   }
+  
 
   // Delete a user
   deleteUser(user: any): void {
@@ -89,8 +89,9 @@ export class UserManagementComponent implements OnInit {
 
   // Promote a user to SUPER ADMIN
   makeSuperAdmin(user: any): void {
+    user.roles.pop()
     user.roles.push('Super Admin');
-    this.userService.updateUser(user).subscribe(() => {
+    this.userService.updateUser(user.id, user).subscribe(() => {
       this.loadUsers(); // Refresh the users list after updating
     });
   }
