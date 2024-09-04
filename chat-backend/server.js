@@ -7,7 +7,7 @@ const port = 3000;
 const { router: authRoutes } = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const { router: groupRoutes } = require('./routes/group');
-const channelRoutes = require('./routes/channel');
+const { router: channelRoutes } = require('./routes/channel');
 
 // Enable CORS for the Angular frontend running on http://localhost:4200
 app.use(cors({

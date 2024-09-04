@@ -48,6 +48,17 @@ router.delete('/:id', (req, res) => {
     res.json({ message: `Group with ID: ${groupId} deleted successfully` });
 });
 
+router.get('/user/:userId', (req, res) => {
+    const userId = parseInt(req.params.userId, 10);
+    const userGroups = groups.filter(group => group.members.includes(userId));
+
+    if (userGroups.length > 0) {
+        res.json(userGroups);
+    } else {
+        res.status(404).json({ message: 'No groups found for this user.' });
+    }
+});
+
 
 module.exports = {
     router,
