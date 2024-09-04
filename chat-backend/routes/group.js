@@ -18,7 +18,8 @@ router.post('/create', (req, res) => {
         id: groups.length + 1,
         name: groupName,
         admins: [adminId],
-        members: [adminId] // Admin is automatically a member
+        members: [adminId], // Admin is automatically a member
+        channels: []
     };
 
     groups.push(newGroup); // Add the group to the groups array

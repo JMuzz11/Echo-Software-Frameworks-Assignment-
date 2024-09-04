@@ -34,8 +34,9 @@ export class DashboardComponent implements OnInit {
   }
 
   goToGroup(groupId: number) {
-    this.router.navigate([`/group/${groupId}`]);
+    this.router.navigate([`/group/${groupId}`]); // Navigate to the group page
   }
+  
 
   selectChannel(group: any, channel: any): void {
     this.router.navigate(['/chat'], { queryParams: { groupId: group.id, channelId: channel.id } });

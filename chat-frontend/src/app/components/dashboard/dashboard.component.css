@@ -92,17 +92,23 @@
   background-color: #f0f0f0;
   border-radius: 5px;
   border: 1px solid #ccc;
+  text-align: center;
 }
 
 .admin-section h2 {
   font-size: 1.5rem;
   color: #333;
   margin-bottom: 15px;
-  text-align: center;
 }
 
-/* Admin buttons */
-.admin-section button {
+/* Admin buttons centered */
+.admin-buttons {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 10px; /* Adds space between buttons */
+}
+
+.admin-buttons button {
   margin: 5px;
   padding: 10px 20px;
   font-size: 1rem;
@@ -114,7 +120,7 @@
   transition: background-color 0.3s ease;
 }
 
-.admin-section button:hover {
+.admin-buttons button:hover {
   background-color: #0056b3;
 }
 
@@ -128,7 +134,7 @@
     font-size: 1rem;
   }
 
-  .admin-section button {
+  .admin-buttons button {
     padding: 8px 16px;
     font-size: 0.9rem;
   }
