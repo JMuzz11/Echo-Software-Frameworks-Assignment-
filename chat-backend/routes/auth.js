@@ -14,6 +14,7 @@ const superUser = {                 // Add Superuser when the server starts
 
 if (!users.find(user => user.username === superUser.username)) {    // Ensure the superuser is added to the users array
     users.push(superUser);
+    console.log("superuser added")
 }
 
 // User login route
@@ -40,6 +41,7 @@ router.post('/login', (req, res) => {
         res.status(404).json({ message: 'User not found' });
     }
 });
+
 
 // User registration route
 router.post('/register', (req, res) => {
