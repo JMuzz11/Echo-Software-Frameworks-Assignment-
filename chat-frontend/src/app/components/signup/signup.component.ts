@@ -39,9 +39,9 @@ export class SignupComponent {
     this.authService.register(username, email, password).subscribe({
       next: response => {
         console.log('Signup successful', response);
-  
-        // Redirect to login after successful signup
-        this.router.navigate(['']);
+        
+        // Navigate to dashboard after successful signup
+        this.router.navigate(['/dashboard']);
       },
       error: signupError => {
         console.error('Signup failed', signupError);

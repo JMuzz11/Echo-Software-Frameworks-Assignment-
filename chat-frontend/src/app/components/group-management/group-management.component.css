@@ -1,0 +1,158 @@
+/* Container for the entire group management section */
+.group-management-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styles */
+h1 {
+  font-size: 28px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Group list styling */
+.group-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.group-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.group-list li span {
+  font-size: 16px;
+  color: #333;
+}
+
+.group-list button {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.group-list button:hover {
+  background-color: #0056b3;
+}
+
+.group-list button.delete {
+  background-color: #dc3545;
+}
+
+.group-list button.delete:hover {
+  background-color: #c82333;
+}
+
+/* Form styling */
+.group-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.form-group .error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+button[type="submit"],
+button[type="button"] {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+button[type="button"]:hover {
+  background-color: #218838;
+}
+
+button[type="button"].cancel {
+  background-color: #ffc107;
+}
+
+button[type="button"].cancel:hover {
+  background-color: #e0a800;
+}
+
+/* Back to Dashboard button */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

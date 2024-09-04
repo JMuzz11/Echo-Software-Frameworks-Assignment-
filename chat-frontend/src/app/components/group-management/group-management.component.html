@@ -1,1 +1,40 @@
-<p>group-management works!</p>
+<div class="group-management-container">
+  <h1>Group Management</h1>
+
+  <div class="group-list">
+    <h2>Groups</h2>
+    <ul>
+      <li *ngFor="let group of groups">
+        <span>{{ group.name }}</span>
+        <button (click)="selectGroup(group)">Edit</button>
+        <button (click)="deleteGroup(group)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="group-form" *ngIf="groupForm">
+    <h2>{{ isEditing ? 'Edit' : 'Add' }} Group</h2>
+    <form [formGroup]="groupForm" (ngSubmit)="saveGroup()">
+      <div class="form-group">
+        <label for="name">Group Name</label>
+        <input id="name" type="text" formControlName="name" required />
+        <div *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error">
+          Group name is required and must be at least 3 characters long.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" required></textarea>
+        <div *ngIf="groupForm.get('description')?.invalid && groupForm.get('description')?.touched" class="error">
+          Description is required.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="groupForm.invalid">{{ isEditing ? 'Update' : 'Add' }} Group</button>
+      <button type="button" (click)="resetForm()">Cancel</button>
+    </form>
+  </div>
+
+  <button (click)="returnToDashboard()">Back to Dashboard</button>
+</div>
