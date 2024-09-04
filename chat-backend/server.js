@@ -21,7 +21,7 @@ app.use(express.json());
 // Use routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/group', groupRoutes);
+app.use('/groups', groupRoutes);
 app.use('/channel', channelRoutes);
 
 // Basic route to ensure server is running

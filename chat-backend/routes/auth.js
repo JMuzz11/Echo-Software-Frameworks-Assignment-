@@ -45,7 +45,7 @@ router.post('/login', (req, res) => {
 
 // User registration route
 router.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, email, password } = req.body;
 
     
     if (users.find(u => u.username === username)) {                            // Check if username already exists
@@ -58,8 +58,8 @@ router.post('/register', (req, res) => {
     const newUser = {                                                          // Create a new user
         id: users.length + 1,
         username,
-        password,
         email,
+        password,
         roles: ['User'], // Default role
         groups: []
     };
