@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -7,45 +7,36 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ChannelService {
-  private apiUrl = 'http://localhost:3000/channels'; // Base URL for channels
+  private apiUrl = 'http://localhost:3000/channel'; // Base URL for channels
 
   constructor(private http: HttpClient) {}
 
-  // Fetch all channels for a given group
-  getChannels(groupId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${groupId}`).pipe(
-      map(response => response),
+  getChannels(groupId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${groupId}/channels`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Create a new channel for a given group
-  createChannel(groupId: number, channelName: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/create`, { groupId, channelName }).pipe(
-      map(response => response),
+  createChannel(groupId: string, channelName: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${groupId}/channels`, { name: channelName }).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Update an existing channel for a given group
-  updateChannel(groupId: number, channelId: number, channelName: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/update`, { groupId, channelId, channelName }).pipe(
-      map(response => response),
+  updateChannel(groupId: string, channelId: string, channelName: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${groupId}/channels/${channelId}`, { name: channelName }).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Delete a channel by ID for a given group
-  deleteChannel(groupId: number, channelId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/delete/${groupId}/${channelId}`).pipe(
-      map(response => response),
+  deleteChannel(groupId: string, channelId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${groupId}/channels/${channelId}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Error handling method
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error.message);
-    return throwError(() => new Error('Something went wrong with the channel management service; please try again later.'));
+    return throwError(() => new Error('Error in channel service; please try again later.'));
   }
 }

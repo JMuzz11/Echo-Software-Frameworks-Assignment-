@@ -1,67 +1,54 @@
 const express = require('express');
 const router = express.Router();
-const { users } = require('./auth.js'); // Importing the users array from auth.js
-
-let groups = []; // In-memory groups array
+const Group = require('../models/Group');
+const User = require('../models/User');
 
 // Create a new group
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
     const { groupName, adminId } = req.body;
-    console.log('Received adminId:', adminId);
+    try {
+        const admin = await User.findById(adminId);
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin user not found' });
+        }
 
-    const admin = users.find(user => user.id === adminId);
-    if (!admin) {
-        return res.status(404).json({ message: 'Admin user not found' });
+        const newGroup = new Group({
+            name: groupName,
+            admins: [admin._id],
+            members: [admin._id]
+        });
+
+        const savedGroup = await newGroup.save();
+        admin.groups.push(savedGroup._id);
+        await admin.save();
+
+        res.json({ message: `Group created with name: ${groupName}`, group: savedGroup });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
     }
-
-    const newGroup = { // Create the group object
-        id: groups.length + 1,
-        name: groupName,
-        admins: [adminId],
-        members: [adminId], // Admin is automatically a member
-        channels: []
-    };
-
-    groups.push(newGroup); // Add the group to the groups array
-    admin.groups.push(newGroup.id); // Add the group to the admin's groups
-
-    res.json({ message: `Group created with name: ${groupName}`, group: newGroup });
 });
 
 // Get all groups
-router.get('/', (req, res) => {
-    res.json(groups); // Return the list of all groups
-});
-
-// Add a route for deleting a group by ID
-router.delete('/:id', (req, res) => {
-    const groupId = parseInt(req.params.id);
-    
-    const groupIndex = groups.findIndex(group => group.id === groupId);
-    
-    if (groupIndex === -1) {
-        return res.status(404).json({ message: 'Group not found' });
-    }
-    
-    // Remove the group from the groups array
-    groups.splice(groupIndex, 1);
-    
-    res.json({ message: `Group with ID: ${groupId} deleted successfully` });
-});
-
-router.get('/user/:userId', (req, res) => {
-    const userId = parseInt(req.params.userId, 10);
-    const userGroups = groups.filter(group => group.members.includes(userId));
-
-    if (userGroups.length > 0) {
-        res.json(userGroups);
-    } else {
-        res.status(404).json({ message: 'No groups found for this user.' });
+router.get('/', async (req, res) => {
+    try {
+        const groups = await Group.find().populate('admins').populate('members').populate('channels');
+        res.json(groups);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
+// Delete a group
+router.delete('/:id', async (req, res) => {
+    const groupId = req.params.id;
+    try {
+        const group = await Group.findByIdAndDelete(groupId);
+        if (!group) return res.status(404).json({ message: 'Group not found' });
 
-module.exports = {
-    router,
-    groups
-};
+        res.json({ message: `Group with ID: ${groupId} deleted successfully` });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+module.exports = { router };

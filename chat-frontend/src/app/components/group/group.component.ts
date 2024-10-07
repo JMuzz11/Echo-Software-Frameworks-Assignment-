@@ -22,7 +22,7 @@ export class GroupComponent implements OnInit {
   }
 
   loadChannels() {
-    this.channelService.getChannels(this.groupId).subscribe(channels => {
+    this.channelService.getChannels(this.groupId.toString()).subscribe(channels => {
       this.channels = channels;
     });
   }

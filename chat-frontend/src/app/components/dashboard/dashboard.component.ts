@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GroupService } from '../../services/group.service';
+import { ChannelService } from '../../services/channel.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';  // Import CommonModule
@@ -11,6 +12,7 @@ import { CommonModule } from '@angular/common';  // Import CommonModule
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
 export class DashboardComponent implements OnInit {
   groups: any[] = [];
   currentUser: any;
@@ -34,9 +36,8 @@ export class DashboardComponent implements OnInit {
   }
 
   goToGroup(groupId: number) {
-    this.router.navigate([`/group/${groupId}`]); // Navigate to the group page
+    this.router.navigate([`/group/${groupId}`]);
   }
-  
 
   selectChannel(group: any, channel: any): void {
     this.router.navigate(['/chat'], { queryParams: { groupId: group.id, channelId: channel.id } });
@@ -60,7 +61,24 @@ export class DashboardComponent implements OnInit {
   }
 
   switchToGroups(): void {
-    this.router.navigate(['/groups'])
+    this.router.navigate(['/groups']);
+  }
+
+  addChannel(group: any): void {
+    const channelName = prompt('Enter the name of the new channel:');
+    if (channelName) {
+      this.groupService.addChannelToGroup(group.id, channelName).subscribe(
+        updatedGroup => {
+          // Update the local group data
+          const groupIndex = this.groups.findIndex(g => g.id === group.id);
+          if (groupIndex !== -1) {
+            this.groups[groupIndex] = updatedGroup;
+          }
+        },
+        error => {
+          console.error('Error adding channel:', error);
+        }
+      );
+    }
   }
 }
-

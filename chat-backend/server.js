@@ -1,19 +1,20 @@
 const express = require('express');
 const cors = require('cors');
+const mongooseConnection = require('./db'); // Import the database connection
 const app = express();
 const port = 3000;
 
 // Import routes
 const { router: authRoutes } = require('./routes/auth');
-const userRoutes  = require('./routes/user');
+const userRoutes = require('./routes/user');
 const { router: groupRoutes } = require('./routes/group');
 const { router: channelRoutes } = require('./routes/channel');
 
 // Enable CORS for the Angular frontend running on http://localhost:4200
 app.use(cors({
-  origin: 'http://localhost:4200',  // Allow requests from this origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed HTTP methods
-  credentials: true  // Enable cookies and authentication headers
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 app.use(express.json());

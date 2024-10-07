@@ -37,7 +37,7 @@ export class ChannelComponent implements OnInit {
 
   // Load the channels for the current group
   loadChannels(): void {
-    this.channelService.getChannels(this.groupId).subscribe((data: any[]) => {
+    this.channelService.getChannels(this.groupId.toString()).subscribe((data: any[]) => {
       this.channels = data;
     });
   }
@@ -57,12 +57,12 @@ export class ChannelComponent implements OnInit {
       const channelData = this.channelForm.value;
 
       if (this.isEditing) {
-        this.channelService.updateChannel(this.groupId, this.selectedChannel.id, channelData.channelName).subscribe(() => {
+        this.channelService.updateChannel(this.groupId.toString(), this.selectedChannel.id, channelData.channelName).subscribe(() => {
           this.loadChannels();
           this.resetForm();
         });
       } else {
-        this.channelService.createChannel(this.groupId, channelData.channelName).subscribe(() => {
+        this.channelService.createChannel(this.groupId.toString(), channelData.channelName).subscribe(() => {
           this.loadChannels();
           this.resetForm();
         });
@@ -72,7 +72,7 @@ export class ChannelComponent implements OnInit {
 
   // Delete a channel
   deleteChannel(channel: any): void {
-    this.channelService.deleteChannel(this.groupId, channel.id).subscribe(() => {
+    this.channelService.deleteChannel(this.groupId.toString(), channel.id).subscribe(() => {
       this.loadChannels();
     });
   }

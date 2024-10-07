@@ -12,30 +12,26 @@
     <p><strong>Role:</strong> {{ currentUser.roles.join(', ') }}</p>
   </div>
 
-  <div class="groups-section">
-    <h2>Your Groups</h2>
-    <div *ngIf="groups.length > 0; else noGroups">
-      <div *ngFor="let group of groups" class="group-card">
-        <h3>
-          <a (click)="goToGroup(group.id)">{{ group.name }}</a>
-        </h3>
-        <div *ngIf="group.channels.length > 0">
-          <p>Select a channel to start chatting:</p>
-          <ul>
-            <li *ngFor="let channel of group.channels">
-              <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
-            </li>
-          </ul>
-        </div>
-        <div *ngIf="group.channels.length === 0">
-          <p>No channels available in this group.</p>
-        </div>
-      </div>
+  <div *ngFor="let group of groups" class="group-card">
+    <h3>
+      <a (click)="goToGroup(group.id)">{{ group.name }}</a>
+    </h3>
+    <div *ngIf="group.channels.length > 0">
+      <p>Select a channel to start chatting:</p>
+      <ul>
+        <li *ngFor="let channel of group.channels">
+          <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
+        </li>
+      </ul>
     </div>
-    <ng-template #noGroups>
-      <p>You are not part of any groups.</p>
-    </ng-template>
+    <div *ngIf="group.channels.length === 0">
+      <p>No channels available in this group.</p>
+    </div>
+    <button (click)="addChannel(group)" class="add-channel-button">
+      Add Channel
+    </button>
   </div>
+  
 
   <!-- Admin Panel Section (Visible for Super Admins and Group Admins) -->
   <div *ngIf="currentUser.roles.includes('Super Admin') || currentUser.roles.includes('Group Admin')" class="admin-section">

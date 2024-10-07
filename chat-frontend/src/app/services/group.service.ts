@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -7,61 +7,54 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class GroupService {
-  private apiUrl = 'http://localhost:3000/groups'; // Base URL
+  private apiUrl = 'http://localhost:3000/groups'; // Base URL for groups
 
   constructor(private http: HttpClient) {}
 
-  // Fetch all groups
   getGroups(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(
-      map(response => response),
+    return this.http.get<any[]>(`${this.apiUrl}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Fetch a specific group by ID
-  getGroupById(id: number): Observable<any> {
+  getGroupById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
       catchError(this.handleError)
     );
   }
 
-  // Create a new group (Note the `/create` endpoint)
   createGroup(group: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/create`, group).pipe(
-      map(response => response),
+    return this.http.post<any>(`${this.apiUrl}`, group).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Update an existing group
-  updateGroup(id: number, group: any): Observable<any> {
+  updateGroup(id: string, group: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, group).pipe(
-      map(response => response),
       catchError(this.handleError)
     );
   }
 
-  // Delete a group by ID
-deleteGroup(id: number): Observable<any> {
-  return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
-    map(response => response),
-    catchError(this.handleError)
-  );
-}
+  deleteGroup(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
 
-getGroupsForUser(userId: number): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
-    map(response => response),
-    catchError(this.handleError)
-  );
-}
+  getGroupsForUser(userId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
 
+  addChannelToGroup(groupId: string, channelName: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${groupId}/channels`, { name: channelName }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
-  // Error handling method
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error.message);
-    return throwError(() => new Error('Something went wrong with the group management service; please try again later.'));
+    return throwError(() => new Error('Error in group service; please try again later.'));
   }
 }

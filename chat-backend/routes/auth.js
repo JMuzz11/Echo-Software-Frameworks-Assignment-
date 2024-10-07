@@ -1,33 +1,17 @@
 const express = require('express');
 const router = express.Router();
-
-let users = [];                     // In-memory users array (Superuser is added at server start)
-
-const superUser = {                 // Add Superuser when the server starts
-    id: 1,
-    username: 'super',
-    password: '123',
-    email: 'super@example.com',
-    roles: ['Super Admin'],
-    groups: []
-};
-
-if (!users.find(user => user.username === superUser.username)) {    // Ensure the superuser is added to the users array
-    users.push(superUser);
-    console.log("superuser added")
-}
+const User = require('../models/User');
 
 // User login route
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const user = users.find(u => u.username === username);   // Find the user by username
-
-    if (user) {                             
-        if (user.password === password) {                   // Check if the password matches
+    try {
+        const user = await User.findOne({ username });
+        if (user && user.password === password) {
             res.json({
                 message: 'Login successful',
                 user: {
-                    id: user.id,
+                    id: user._id,
                     username: user.username,
                     email: user.email,
                     roles: user.roles,
@@ -35,40 +19,29 @@ router.post('/login', (req, res) => {
                 }
             });
         } else {
-            res.status(401).json({ message: 'Invalid password' });
+            res.status(401).json({ message: 'Invalid credentials' });
         }
-    } else {
-        res.status(404).json({ message: 'User not found' });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
     }
 });
-
 
 // User registration route
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
+    try {
+        const existingUser = await User.findOne({ username });
+        if (existingUser) return res.status(400).json({ message: 'Username already exists' });
 
-    
-    if (users.find(u => u.username === username)) {                            // Check if username already exists
-        return res.status(400).json({ message: 'Username already exists' });
-    }
-    if (users.find(u => u.email === email)) {                                  // Check if email already exists
-        return res.status(400).json({ message: 'Email already exists' });
-    }
-    
-    const newUser = {                                                          // Create a new user
-        id: users.length + 1,
-        username,
-        email,
-        password,
-        roles: ['User'], // Default role
-        groups: []
-    };
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) return res.status(400).json({ message: 'Email already exists' });
 
-    users.push(newUser);
-    res.json({ message: 'User registered successfully', user: newUser });
+        const newUser = new User({ username, email, password });
+        await newUser.save();
+        res.json({ message: 'User registered successfully', user: newUser });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
-module.exports = {
-    router,
-    users
-};
+module.exports = { router };
