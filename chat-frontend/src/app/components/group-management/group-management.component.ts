@@ -52,16 +52,18 @@ export class GroupManagementComponent implements OnInit {
     }
   
     const groupData = this.groupForm.value;
-    const currentUser = this.authService.getUserFromSession();  // Get current user from session
-    const adminId = currentUser.id;  // Use the ID from the logged-in user
+    const currentUser = this.authService.getUserFromSession(); // Get current user from session
+    const adminId = currentUser.id; // Use the ID from the logged-in user
   
     const requestData = {
       groupName: groupData.name,
+      description: groupData.description,
       adminId: adminId
     };
   
     if (this.isEditing) {
-      this.groupService.updateGroup(groupData.id, requestData).subscribe(() => {
+      const groupId = this.groups.find(g => g.name === groupData.name)?.id;
+      this.groupService.updateGroup(groupId, requestData).subscribe(() => {
         this.loadGroups();
         this.resetForm();
       });
@@ -72,14 +74,17 @@ export class GroupManagementComponent implements OnInit {
       });
     }
   }
-  
+ 
 
   deleteGroup(group: any) {
-    this.groupService.deleteGroup(group.id).subscribe(() => {
-      this.loadGroups(); // Refresh the list of groups after deletion
-    }, error => {
-      console.error('Error deleting group:', error);
-    });
+    this.groupService.deleteGroup(group._id).subscribe(
+      () => {
+        this.loadGroups(); // Refresh the list of groups after deletion
+      },
+      error => {
+        console.error('Error deleting group:', error);
+      }
+    );
   }
   
 

@@ -14,7 +14,7 @@
 
   <div *ngFor="let group of groups" class="group-card">
     <h3>
-      <a (click)="goToGroup(group.id)">{{ group.name }}</a>
+      <a (click)="goToGroup(group._id)">{{ group.name }}</a>
     </h3>
     <div *ngIf="group.channels.length > 0">
       <p>Select a channel to start chatting:</p>

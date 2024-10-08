@@ -24,7 +24,7 @@ export class GroupService {
   }
 
   createGroup(group: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, group).pipe(
+    return this.http.post<any>(`${this.apiUrl}/create`, group).pipe(
       catchError(this.handleError)
     );
   }
@@ -43,6 +43,10 @@ export class GroupService {
 
   getGroupsForUser(userId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
+      map((response) => {
+        // Make sure the response data format matches what you expect in the frontend
+        return response;
+      }),
       catchError(this.handleError)
     );
   }

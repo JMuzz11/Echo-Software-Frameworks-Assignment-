@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mongooseConnection = require('./db'); // Import the database connection
+const http = require('http');
+const { Server } = require('socket.io');
+const { ExpressPeerServer } = require('peer');
 const app = express();
 const port = 3000;
 
@@ -19,17 +22,86 @@ app.use(cors({
 
 app.use(express.json());
 
+// Set up file upload middleware using multer (for profile pictures)
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Set the upload destination folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // File naming convention
+  }
+});
+
+const upload = multer({ storage });
+
+// Add a route for uploading profile pictures
+app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const User = require('./models/User'); // Import User model
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.avatar = req.file.path; // Save the avatar path in the user model
+    await user.save();
+    res.json({ message: 'Avatar uploaded successfully', avatar: user.avatar });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Use routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/groups', groupRoutes);
 app.use('/channel', channelRoutes);
 
+// Set up Socket.io
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST']
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('joinChannel', (channelId) => {
+    socket.join(channelId);
+    console.log(`User joined channel ${channelId}`);
+  });
+
+  socket.on('sendMessage', (message) => {
+    // Broadcast the message to other users in the same channel
+    io.to(message.channelId).emit('receiveMessage', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// Set up PeerJS server
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+  path: '/myapp', // This is the path where the PeerJS server will be accessible
+  allow_discovery: true
+});
+
+app.use('/peerjs', peerServer);
+
 // Basic route to ensure server is running
 app.get('/', (req, res) => {
   res.send('Echo backend server is running!');
 });
 
-app.listen(port, () => {
+// Start server
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

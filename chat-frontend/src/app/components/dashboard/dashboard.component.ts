@@ -30,8 +30,11 @@ export class DashboardComponent implements OnInit {
   }
 
   loadGroups() {
-    this.groupService.getGroupsForUser(this.currentUser.id).subscribe(groups => {
+    this.groupService.getGroupsForUser(this.currentUser._id).subscribe(groups => {
       this.groups = groups;
+      this.cdr.detectChanges(); // Make sure Angular detects the change
+    }, error => {
+      console.error('Error loading groups:', error);
     });
   }
 
@@ -40,7 +43,7 @@ export class DashboardComponent implements OnInit {
   }
 
   selectChannel(group: any, channel: any): void {
-    this.router.navigate(['/chat'], { queryParams: { groupId: group.id, channelId: channel.id } });
+    this.router.navigate(['/chat'], { queryParams: { groupId: group._id, channelId: channel.id } });
   }
 
   manageUsers(): void {
@@ -67,7 +70,7 @@ export class DashboardComponent implements OnInit {
   addChannel(group: any): void {
     const channelName = prompt('Enter the name of the new channel:');
     if (channelName) {
-      this.groupService.addChannelToGroup(group.id, channelName).subscribe(
+      this.groupService.addChannelToGroup(group._id, channelName).subscribe(
         updatedGroup => {
           // Update the local group data
           const groupIndex = this.groups.findIndex(g => g.id === group.id);
