@@ -7,43 +7,30 @@ import { Observable } from 'rxjs';
 })
 export class SocketService {
   private socket: Socket;
-  private readonly SOCKET_URL = 'http://localhost:3000'; // Replace with your actual server URL
+  private readonly SOCKET_URL = 'http://localhost:3000';
 
   constructor() {
-    // Initialize the socket connection when the service is instantiated
     this.socket = io(this.SOCKET_URL);
   }
 
-  // Method to emit an event to the server
-  emit(eventName: string, data: any): void {
-    this.socket.emit(eventName, data);
+  emitPeerID(peerID: string): void {
+    this.socket.emit('peerID', peerID);
   }
 
-  // Method to listen to an event from the server
-  on<T>(eventName: string): Observable<T> {
-    return new Observable<T>((observer) => {
-      this.socket.on(eventName, (data: T) => {
+  getPeerID(): Observable<string> {
+    return new Observable(observer => {
+      this.socket.on('peerID', (data: string) => {
         observer.next(data);
       });
-
-      // Cleanup when the observer is unsubscribed
-      return () => {
-        this.socket.off(eventName);
-      };
     });
   }
 
-  // Disconnect the socket when no longer needed
+  // Disconnect and reconnect methods if needed
   disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+    this.socket.disconnect();
   }
 
-  // Reconnect the socket if needed
   reconnect(): void {
-    if (this.socket) {
-      this.socket.connect();
-    }
+    this.socket.connect();
   }
 }

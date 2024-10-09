@@ -7,17 +7,22 @@
   </div>
 
   <button (click)="startVideoChat()" class="video-chat-button">Start Video Chat</button>
+  <button (click)="endVideoChat()" class="video-chat-button">End Video Chat</button>
   <button (click)="returnToDashboard()" class="dashboard-button">Back to Dashboard</button>
 
+  <!-- Video Elements for the video chat -->
+  <div class="video-container">
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+  </div>
+
   <div class="chat-container">
-    <!-- Messages list -->
     <div class="messages-list">
       <div *ngFor="let message of messages" class="message">
         <strong>{{ message.senderName }}:</strong> {{ message.content }}
       </div>
     </div>
 
-    <!-- Input field for sending messages -->
     <div class="message-input">
       <input type="text" [(ngModel)]="newMessage" placeholder="Type your message here..." />
       <button (click)="sendMessage()">Send</button>

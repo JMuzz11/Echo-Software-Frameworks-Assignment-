@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
 import { HttpClient } from '@angular/common/http';
+import Peer from 'peerjs';
 
 @Component({
   selector: 'app-group',
@@ -13,8 +14,12 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './group.component.html',
   styleUrls: ['./group.component.css']
 })
+
 export class GroupComponent implements OnInit, OnDestroy {
   socket: Socket;
+  peer: Peer | undefined;
+  call: any;
+  localStream: MediaStream | undefined;
   groupId: string | null = null;
   currentUser: any;
   groupDetails: any = {};
@@ -52,6 +57,99 @@ export class GroupComponent implements OnInit, OnDestroy {
       this.messages.push(message);
       this.cdr.detectChanges();
     });
+
+    this.initializePeer();
+  }
+
+  initializePeer(): void {
+    this.peer = new Peer({
+      host: 'localhost',
+      port: 3000,
+      path: '/peer.js',
+      secure: false
+    });
+
+    this.peer.on('open', (id) => {
+      console.log('My peer ID is:', id);
+    });
+
+    this.peer.on('call', (call) => {
+      this.answerCall(call);
+    });
+  }
+
+  startVideoChat(): void {
+    if (this.groupId) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        this.localStream = stream;
+        const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
+        localVideo.srcObject = stream;
+        localVideo.play();
+
+        const remotePeerId = prompt('Enter the peer ID to connect with');
+        if (remotePeerId) {
+          this.call = this.peer?.call(remotePeerId, stream);
+          this.handleCallStream(this.call);
+        }
+      }).catch((err) => {
+        console.error('Error accessing media devices:', err);
+      });
+    } else {
+      console.error('No group ID available for video chat');
+    }
+  }
+
+  answerCall(call: any): void {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+      this.localStream = stream;
+      const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
+      localVideo.srcObject = stream;
+      localVideo.play();
+
+      call.answer(stream);
+      this.handleCallStream(call);
+    }).catch((err) => {
+      console.error('Error accessing media devices:', err);
+    });
+  }
+
+  handleCallStream(call: any): void {
+    call?.on('stream', (remoteStream: MediaStream) => {
+      const remoteVideo = document.getElementById('remoteVideo') as HTMLVideoElement;
+      remoteVideo.srcObject = remoteStream;
+      remoteVideo.play();
+    });
+  }
+
+  endVideoChat(): void {
+    if (this.call) {
+      this.call.close(); // Close the current call
+      this.call = null; // Reset the call reference
+    }
+
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop()); // Stop all tracks of the local stream
+      this.localStream = undefined;
+    }
+
+    // Clear the video elements
+    const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
+    if (localVideo) {
+      localVideo.srcObject = null;
+    }
+
+    const remoteVideo = document.getElementById('remoteVideo') as HTMLVideoElement;
+    if (remoteVideo) {
+      remoteVideo.srcObject = null;
+    }
+
+    console.log('Video chat ended');
+  }
+
+  ngOnDestroy(): void {
+    this.endVideoChat(); // Ensure the video chat is ended when component is destroyed
+    this.peer?.disconnect();
+    this.socket.disconnect();
   }
 
   loadGroupDetails(groupId: string): void {
@@ -107,20 +205,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
-  startVideoChat(): void {
-    if (this.groupId) {
-      alert('Starting video chat...');
-      // Implement the PeerJS setup here for the video chat
-    } else {
-      console.error('No group ID available for video chat');
-    }
-  }
-
   returnToDashboard(): void {
     this.router.navigate(['/dashboard']);
-  }
-
-  ngOnDestroy(): void {
-    this.socket.disconnect();
   }
 }
