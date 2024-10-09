@@ -168,9 +168,121 @@ cd Echo-Software-Frameworks-Assignment-
   - **Password**: `123`
 - After logging in, you will be able to create groups, channels, and start chatting.
 
-## Future Enhancements (Phase 2)
+## Data Structures
 
-- **MongoDB Integration**: Replace local storage with MongoDB for persistent data storage.
-- **Socket.io**: Implement real-time message broadcasting using Socket.io.
-- **Image and Video Support**: Allow users to send images and video messages.
-- **PeerJS Integration**: Add video chat functionality using PeerJS.
+### Server-Side (Node.js)
+
+- **User Schema**: Stores user details including:
+  - `username`, `email`, `passwordHash`, `roles` (e.g., Super Admin, Group Admin, User), and `groups`.
+- **Group Schema**: Represents a group with fields like:
+  - `name`, `admins`, `members`, and `channels`.
+- **Channel Schema**: Represents a channel within a group with fields like:
+  - `name`, `groupId`, and `messages`.
+
+### Client-Side (Angular)
+
+- **User Model**: Represents the user entity with attributes such as `username`, `email`, `roles`, and `groups`.
+- **Group Model**: Represents a group with its associated channels and members.
+- **Channel Model**: Represents a chat channel with its messages and participants.
+
+## Angular Architecture
+
+### Components
+
+- **LoginComponent**: Manages user authentication.
+- **GroupComponent**: Displays a list of groups the user is a member of.
+- **ChannelComponent**: Manages chat interactions within a selected channel.
+- **VideoComponent**: Manages video chat functionality using PeerJS.
+
+### Services
+
+- **AuthService**: Manages user authentication and token storage.
+- **GroupService**: Manages API interactions related to groups.
+- **ChannelService**: Manages channels and chat messages.
+- **PeerService**: Handles PeerJS connections for video calls.
+- **SocketService**: Manages real-time communication using Socket.io.
+
+### Models
+
+- `User`: Defines the user data structure.
+- `Group`: Defines the group data structure.
+- `Channel`: Defines the channel data structure.
+
+### Routes
+
+- `/login`: Route for user login.
+- `/groups`: Displays the user's groups.
+- `/group/:groupId`: Displays channels within a specific group.
+- `/group/:groupId/channel/:channelId`: Displays messages for a channel.
+
+## Node Server Architecture
+
+### Modules
+
+- **UserModule**: Handles user registration, login, and authentication.
+- **GroupModule**: Manages groups, including creation, deletion, and modification.
+- **ChannelModule**: Manages channels and message broadcasting.
+
+### Functions
+
+- `loginUser()`, `createGroup()`, `sendMessage()`, etc. manage authentication, group creation, and message broadcasting.
+
+### Files
+
+- `server.js`: The entry point for the Node.js server.
+- `routes.js`: Defines API routes for handling client requests.
+- `auth.js`: Middleware for handling authentication and authorization.
+
+### Global Variables
+
+- **io**: The Socket.io instance used for real-time communication.
+- **users**, **groups**, **channels**: Collections or arrays storing user, group, and channel data.
+
+## API Routes
+
+### Authentication Routes
+
+- `/api/auth/login` - **POST**: Authenticates a user. Expects `{username, password}` and returns `{token, userData}`.
+
+### Group Routes
+
+- `/api/groups`:
+  - **GET**: Retrieves all groups the authenticated user belongs to. Returns an array of groups.
+  - **POST**: Creates a new group. Expects `{name, adminId}` and returns the created group.
+
+### Channel Routes
+
+- `/api/groups/:groupId/channels` - **GET**: Retrieves channels within a group.
+- `/api/groups/:groupId/channels/:channelId/messages`:
+  - **GET**: Fetches messages for a channel.
+  - **POST**: Sends a message to the channel.
+
+### Other Routes
+
+- `/upload-avatar` - **POST**: Handles profile avatar uploads with multipart form data.
+
+## Client-Server Interaction
+
+### Login Process
+
+1. The user enters their username and password.
+2. The Angular app sends a POST request to `/api/login` with the user's credentials.
+3. The server verifies the credentials and returns a token.
+4. The token is stored in the client's local storage and used for subsequent authenticated requests.
+
+### Group and Channel Interaction
+
+1. After login, the user is presented with a list of groups.
+2. When a group is selected, a GET request is sent to `/api/groups/:id/channels` to retrieve available channels.
+3. When a channel is selected, a GET request is sent to `/api/groups/:groupId/channels/:channelId/messages` to load the chat history.
+4. The user can send a message, which triggers a POST request to the same endpoint, and the message is broadcasted to other users in real-time.
+
+### Real-time Messaging
+
+- **Frontend**: Uses `SocketService` to join channels and listen for new messages.
+- **Backend**: Broadcasts messages to all connected users in a channel using Socket.io.
+
+### Video Chat
+
+- **Frontend**: `PeerService` initializes a PeerJS connection in `VideoComponent`.
+- **Backend**: Hosts the PeerJS server on `/peerjs` to manage video calls.
