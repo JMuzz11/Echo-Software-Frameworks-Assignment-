@@ -1,8 +1,26 @@
-<div class="group">
-    <h2>Channels in Group {{ groupId }}</h2>
-  
-    <ul>
-      <li *ngFor="let channel of channels">{{ channel.name }}</li>
-    </ul>
+<div class="group-home">
+  <h2>{{ groupDetails?.name }}</h2>
+
+  <div *ngIf="groupDetails">
+    <p><strong>Admins:</strong> {{ groupDetails.admins?.length || 0 }}</p>
+    <p><strong>Members:</strong> {{ groupDetails.members?.length || 0 }}</p>
   </div>
-  
+
+  <button (click)="startVideoChat()" class="video-chat-button">Start Video Chat</button>
+  <button (click)="returnToDashboard()" class="dashboard-button">Back to Dashboard</button>
+
+  <div class="chat-container">
+    <!-- Messages list -->
+    <div class="messages-list">
+      <div *ngFor="let message of messages" class="message">
+        <strong>{{ message.senderName }}:</strong> {{ message.content }}
+      </div>
+    </div>
+
+    <!-- Input field for sending messages -->
+    <div class="message-input">
+      <input type="text" [(ngModel)]="newMessage" placeholder="Type your message here..." />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,14 @@
-<p>chat works!</p>
+<div class="chat-container">
+  <div class="message" *ngFor="let message of messages">
+    <img [src]="'http://localhost:3000/' + message.senderAvatar" alt="Avatar" class="avatar" />
+    <div class="message-content">
+      <strong>{{ message.senderName }}:</strong> {{ message.content }}
+    </div>
+  </div>
+
+  <div class="input-container">
+    <input type="text" [(ngModel)]="newMessage" placeholder="Type your message..." />
+    <button (click)="sendMessage()">Send</button>
+    <button (click)="returnToDashboard()">Back To Dashboard</button>
+  </div>
+</div>

@@ -17,34 +17,16 @@
     <button (click)="uploadProfilePicture()">Upload Profile Picture</button>
   </div>
 
+  <!-- Groups Section -->
   <div *ngFor="let group of groups" class="group-card">
-    <h3>
-      <a (click)="goToGroup(group._id)">{{ group.name }}</a>
-    </h3>
-    <div *ngIf="group.channels.length > 0">
-      <p>Select a channel to start chatting:</p>
-      <ul>
-        <li *ngFor="let channel of group.channels">
-          <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
-        </li>
-      </ul>
-      <button (click)="startTextChat(group)" class="start-text-chat-button">
-        Start Text Chat
-      </button>
-      <button (click)="startVideoChat(group)" class="start-video-chat-button">
-        Start Video Chat
-      </button>
-    </div>
-    <div *ngIf="group.channels.length === 0">
-      <p>No channels available in this group.</p>
-    </div>
-    <button (click)="addChannel(group)" class="add-channel-button">
-      Add Channel
+    <h3>{{ group.name }}</h3>
+    <button (click)="enterGroup(group._id)" class="enter-group-button">
+      Enter Group
     </button>
   </div>
 
   <!-- Admin Panel Section (Visible for Super Admins and Group Admins) -->
-  <div *ngIf="currentUser.roles.includes('Super Admin') || currentUser.roles.includes('Group Admin')" class="admin-section">
+  <div *ngIf="currentUser && (currentUser.roles.includes('Super Admin') || currentUser.roles.includes('Group Admin'))" class="admin-section">
     <h2>Admin Panel</h2>
     <div class="admin-buttons">
       <button (click)="manageUsers()">Manage Users</button>

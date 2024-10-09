@@ -1,29 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GroupService } from '../../services/group.service';
+import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-group-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './group-management.component.html',
   styleUrls: ['./group-management.component.css']
 })
 export class GroupManagementComponent implements OnInit {
   groups: any[] = [];
+  users: any[] = []; // To hold all users
+  groupMembers: any[] = []; // To hold the members of a selected group
+  selectedUserId: string = ''; // To hold the selected user's ID
   groupForm: FormGroup;
   isEditing = false;
+  groupId: string = ''; // To store the ID of the selected group
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private groupService: GroupService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService // Injecting UserService here
   ) {
     this.groupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -33,6 +38,21 @@ export class GroupManagementComponent implements OnInit {
 
   ngOnInit() {
     this.loadGroups();
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.userService.getUsers().subscribe((data: any[]) => {
+      this.users = data;
+    });
+  }
+
+  loadGroupMembers(): void {
+    if (this.groupId) {
+      this.groupService.getGroupById(this.groupId).subscribe((group: any) => {
+        this.groupMembers = group.members;
+      });
+    }
   }
 
   loadGroups() {
@@ -43,27 +63,28 @@ export class GroupManagementComponent implements OnInit {
 
   selectGroup(group: any) {
     this.isEditing = true;
+    this.groupId = group._id; // Set the group ID when a group is selected
     this.groupForm.patchValue(group);
+    this.loadGroupMembers(); // Load members of the selected group
   }
 
   saveGroup() {
     if (this.groupForm.invalid) {
       return;
     }
-  
+
     const groupData = this.groupForm.value;
     const currentUser = this.authService.getUserFromSession(); // Get current user from session
     const adminId = currentUser._id; // Use the ID from the logged-in user
-  
+
     const requestData = {
       groupName: groupData.name,
       description: groupData.description,
       adminId: adminId
     };
-  
+
     if (this.isEditing) {
-      const groupId = this.groups.find(g => g.name === groupData.name)?._id;
-      this.groupService.updateGroup(groupId, requestData).subscribe(() => {
+      this.groupService.updateGroup(this.groupId, requestData).subscribe(() => {
         this.loadGroups();
         this.resetForm();
       });
@@ -74,7 +95,6 @@ export class GroupManagementComponent implements OnInit {
       });
     }
   }
- 
 
   deleteGroup(group: any) {
     this.groupService.deleteGroup(group._id).subscribe(
@@ -86,7 +106,6 @@ export class GroupManagementComponent implements OnInit {
       }
     );
   }
-  
 
   resetForm() {
     this.isEditing = false;
@@ -96,4 +115,20 @@ export class GroupManagementComponent implements OnInit {
   returnToDashboard() {
     this.router.navigate(['/dashboard']);
   }
+
+  addUserToGroup(groupId: string): void {
+    if (this.selectedUserId) {
+      this.groupService.addUserToGroup(groupId, this.selectedUserId).subscribe({
+        next: () => {
+          alert('User added to the group successfully');
+          this.loadGroups(); // Reload the groups to update the member list
+        },
+        error: (err) => {
+          console.error('Error adding user to group:', err);
+          alert('Error adding user to the group. Please try again.');
+        }
+      });
+    }
+  }
+  
 }

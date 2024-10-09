@@ -61,27 +61,39 @@ app.use('/groups', groupRoutes);
 app.use('/channel', channelRoutes);
 app.use('/uploads', express.static('uploads'));
 
+// Create the HTTP server
+const server = http.createServer(app);
 
 // Set up Socket.io
-const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:4200',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true
   }
 });
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('joinChannel', (channelId) => {
-    socket.join(channelId);
-    console.log(`User joined channel ${channelId}`);
+  socket.on('joinGroup', (groupId) => {
+    if (groupId) {
+      socket.join(groupId);
+      console.log(`User joined group ${groupId}`);
+    } else {
+      console.error('Invalid groupId received');
+    }
   });
 
   socket.on('sendMessage', (message) => {
-    // Broadcast the message to other users in the same channel
-    io.to(message.channelId).emit('receiveMessage', message);
+    const groupId = message.groupId;
+    if (groupId) {
+      io.to(groupId).emit('receiveMessage', message);
+      console.log(`Message sent in group ${groupId}:`, message);
+    } else {
+      console.error('Message received without a valid groupId');
+    }
   });
 
   socket.on('disconnect', () => {

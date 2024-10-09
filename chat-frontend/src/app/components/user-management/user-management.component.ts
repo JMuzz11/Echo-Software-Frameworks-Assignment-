@@ -58,7 +58,7 @@ export class UserManagementComponent implements OnInit {
       };
   
       if (this.isEditing) {
-        this.userService.updateUser(updatedUser.id, updatedUser).subscribe(() => {
+        this.userService.updateUser(updatedUser._id, updatedUser).subscribe(() => {
           this.loadUsers();
           this.resetForm();
         });
@@ -72,27 +72,33 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUser(user: any): void {
-    this.userService.deleteUser(user.id).subscribe(() => {
-      this.loadUsers();
-      if (this.selectedUser?.id === user.id) {
-        this.resetForm();
-      }
-    });
+    if (confirm(`Are you sure you want to delete user ${user.username}?`)) {
+      this.userService.deleteUser(user._id).subscribe({
+        next: () => {
+          this.loadUsers();
+          if (this.selectedUser?._id === user._id) {
+            this.resetForm();
+          }
+        },
+        error: (err) => {
+          console.error('Error deleting user:', err);
+          alert('There was an issue deleting the user. Please try again.');
+        }
+      });
+    }
   }
 
   makeGroupAdmin(user: any): void {
-    user.roles.pop();
-    user.roles.push('Group Admin');
-    this.userService.updateUser(user.id, user).subscribe(() => {
-      this.loadUsers(); // Refresh the users list after updating
+    user.roles = ['Group Admin'];
+    this.userService.updateUser(user._id, user).subscribe(() => {
+      this.loadUsers();
     });
   }
 
   makeSuperAdmin(user: any): void {
-    user.roles.pop();
-    user.roles.push('Super Admin');
-    this.userService.updateUser(user.id, user).subscribe(() => {
-      this.loadUsers(); // Refresh the users list after updating
+    user.roles = ['Super Admin'];
+    this.userService.updateUser(user._id, user).subscribe(() => {
+      this.loadUsers();
     });
   }
 
@@ -118,4 +124,6 @@ export class UserManagementComponent implements OnInit {
   returnToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
+
+  
 }

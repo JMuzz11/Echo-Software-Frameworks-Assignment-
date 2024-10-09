@@ -24,7 +24,7 @@ export class UserService {
   }
 
   updateUser(id: string, user: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, user).pipe(
+    return this.http.put<any>(`${this.apiUrl}/users/${id}`, user).pipe(
       catchError(this.handleError)
     );
   }
@@ -36,10 +36,11 @@ export class UserService {
   }
 
   deleteUser(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<any>(`${this.apiUrl}/users/${id}`).pipe(
       catchError(this.handleError)
     );
   }
+  
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error.message);

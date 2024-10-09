@@ -8,6 +8,21 @@
         <span>{{ group.name }}</span>
         <button (click)="selectGroup(group)">Edit</button>
         <button (click)="deleteGroup(group)">Delete</button>
+
+        <!-- Add User to Group Section -->
+        <div class="add-user-section">
+          <h3>Add User to {{ group.name }}</h3>
+          <select [(ngModel)]="selectedUserId">
+            <option *ngFor="let user of users" [value]="user._id">{{ user.username }}</option>
+          </select>
+          <button (click)="addUserToGroup(group._id)">Add User</button>
+        </div>
+
+        <!-- Group Members Section -->
+        <h3>Group Members</h3>
+        <ul>
+          <li *ngFor="let member of group.members">{{ member.username }}</li>
+        </ul>
       </li>
     </ul>
   </div>

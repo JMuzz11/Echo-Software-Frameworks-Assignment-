@@ -113,7 +113,7 @@
   text-decoration: underline;
 }
 
-.add-channel-button {
+.enter-group-button {
   padding: 8px 16px;
   font-size: 0.9rem;
   border: none;
@@ -125,7 +125,7 @@
   margin-top: 10px;
 }
 
-.add-channel-button:hover {
+.enter-group-button:hover {
   background-color: #218838;
 }
 

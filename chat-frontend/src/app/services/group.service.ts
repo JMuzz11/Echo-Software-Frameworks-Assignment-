@@ -54,6 +54,12 @@ export class GroupService {
     );
   }
 
+  addUserToGroup(groupId: string, userId: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${groupId}/addUser`, { userId }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error.message);
     return throwError(() => new Error('Error in group service; please try again later.'));

@@ -114,13 +114,8 @@ uploadProfilePicture(): void {
   input.click();
 }
 
-  startVideoChat(group: any): void {
-    alert('Starting video chat...');
-    // You would implement the PeerJS setup here to start the video chat
+  enterGroup(groupId: string): void {
+    this.router.navigate(['/group', groupId]);
   }
-
-  startTextChat(group: any): void {
-    alert('Starting text chat...');
-    // Navigate to a text chat route or implement chat functionality
-  }
+  
 }
