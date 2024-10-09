@@ -37,8 +37,21 @@ export class AuthService {
 
   getUserFromSession(): any {
     const user = sessionStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      if (!parsedUser._id) {
+        console.error('User ID is missing from session storage');
+      }
+      if (!parsedUser.avatar) {
+        console.warn('No avatar found for the current user.');
+      }
+      return parsedUser;
+    } else {
+      console.error('No user found in session storage');
+      return null;
+    }
   }
+ 
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error.message);

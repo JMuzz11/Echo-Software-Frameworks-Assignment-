@@ -3,16 +3,16 @@ import { GroupService } from '../../services/group.service';
 import { ChannelService } from '../../services/channel.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';  // Import CommonModule
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,  // Marking as a standalone component
-  imports: [CommonModule],  // Import CommonModule for directives like ngIf, ngFor
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-
 export class DashboardComponent implements OnInit {
   groups: any[] = [];
   currentUser: any;
@@ -21,24 +21,33 @@ export class DashboardComponent implements OnInit {
     private groupService: GroupService,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     this.currentUser = this.authService.getUserFromSession();
+    if (this.currentUser && !this.currentUser.avatar) {
+      console.warn('No avatar found for the current user.');
+    }
     this.loadGroups();
   }
 
-  loadGroups() {
+// dashboard.component.ts
+loadGroups() {
+  if (this.currentUser && this.currentUser._id) {
     this.groupService.getGroupsForUser(this.currentUser._id).subscribe(groups => {
       this.groups = groups;
-      this.cdr.detectChanges(); // Make sure Angular detects the change
     }, error => {
       console.error('Error loading groups:', error);
     });
+  } else {
+    console.error('No user ID found for the current user.');
   }
+}
 
-  goToGroup(groupId: number) {
+
+  goToGroup(groupId: string) {
     this.router.navigate([`/group/${groupId}`]);
   }
 
@@ -63,17 +72,12 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  switchToGroups(): void {
-    this.router.navigate(['/groups']);
-  }
-
   addChannel(group: any): void {
     const channelName = prompt('Enter the name of the new channel:');
     if (channelName) {
       this.groupService.addChannelToGroup(group._id, channelName).subscribe(
         updatedGroup => {
-          // Update the local group data
-          const groupIndex = this.groups.findIndex(g => g.id === group.id);
+          const groupIndex = this.groups.findIndex(g => g._id === group._id);
           if (groupIndex !== -1) {
             this.groups[groupIndex] = updatedGroup;
           }
@@ -83,5 +87,40 @@ export class DashboardComponent implements OnInit {
         }
       );
     }
+  }
+
+uploadProfilePicture(): void {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      formData.append('userId', this.currentUser._id);
+      this.http.post('http://localhost:3000/upload-avatar', formData).subscribe(
+        (response: any) => {
+          console.log('Avatar uploaded successfully:', response);
+          this.currentUser.avatar = response.avatar; // Update the avatar in the session
+          sessionStorage.setItem('user', JSON.stringify(this.currentUser)); // Save the updated user in session storage
+        },
+        error => {
+          console.error('Error uploading avatar:', error);
+        }
+      );
+    }
+  };
+  input.click();
+}
+
+  startVideoChat(group: any): void {
+    alert('Starting video chat...');
+    // You would implement the PeerJS setup here to start the video chat
+  }
+
+  startTextChat(group: any): void {
+    alert('Starting text chat...');
+    // Navigate to a text chat route or implement chat functionality
   }
 }

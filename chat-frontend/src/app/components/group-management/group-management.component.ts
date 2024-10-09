@@ -53,7 +53,7 @@ export class GroupManagementComponent implements OnInit {
   
     const groupData = this.groupForm.value;
     const currentUser = this.authService.getUserFromSession(); // Get current user from session
-    const adminId = currentUser.id; // Use the ID from the logged-in user
+    const adminId = currentUser._id; // Use the ID from the logged-in user
   
     const requestData = {
       groupName: groupData.name,
@@ -62,7 +62,7 @@ export class GroupManagementComponent implements OnInit {
     };
   
     if (this.isEditing) {
-      const groupId = this.groups.find(g => g.name === groupData.name)?.id;
+      const groupId = this.groups.find(g => g.name === groupData.name)?._id;
       this.groupService.updateGroup(groupId, requestData).subscribe(() => {
         this.loadGroups();
         this.resetForm();

@@ -59,6 +59,8 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/groups', groupRoutes);
 app.use('/channel', channelRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 // Set up Socket.io
 const server = http.createServer(app);

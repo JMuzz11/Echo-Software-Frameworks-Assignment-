@@ -10,6 +10,11 @@
     <h2>Your Information</h2>
     <p><strong>Email:</strong> {{ currentUser.email }}</p>
     <p><strong>Role:</strong> {{ currentUser.roles.join(', ') }}</p>
+    <!-- Display Profile Picture -->
+    <div *ngIf="currentUser.avatar" class="profile-picture-container">
+      <img [src]="'http://localhost:3000/' + currentUser.avatar" alt="Profile Picture" class="profile-picture" />
+    </div>
+    <button (click)="uploadProfilePicture()">Upload Profile Picture</button>
   </div>
 
   <div *ngFor="let group of groups" class="group-card">
@@ -23,6 +28,12 @@
           <a (click)="selectChannel(group, channel)">{{ channel.name }}</a>
         </li>
       </ul>
+      <button (click)="startTextChat(group)" class="start-text-chat-button">
+        Start Text Chat
+      </button>
+      <button (click)="startVideoChat(group)" class="start-video-chat-button">
+        Start Video Chat
+      </button>
     </div>
     <div *ngIf="group.channels.length === 0">
       <p>No channels available in this group.</p>
@@ -31,7 +42,6 @@
       Add Channel
     </button>
   </div>
-  
 
   <!-- Admin Panel Section (Visible for Super Admins and Group Admins) -->
   <div *ngIf="currentUser.roles.includes('Super Admin') || currentUser.roles.includes('Group Admin')" class="admin-section">

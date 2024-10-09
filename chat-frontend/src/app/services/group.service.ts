@@ -43,13 +43,10 @@ export class GroupService {
 
   getGroupsForUser(userId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
-      map((response) => {
-        // Make sure the response data format matches what you expect in the frontend
-        return response;
-      }),
       catchError(this.handleError)
     );
   }
+  
 
   addChannelToGroup(groupId: string, channelName: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${groupId}/channels`, { name: channelName }).pipe(
